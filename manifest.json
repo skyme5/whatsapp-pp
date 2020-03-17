@@ -1,0 +1,22 @@
+{
+	"background": {
+		"scripts": [
+		]
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://web.whatsapp.com/*"],
+			"js": ["js/whatsapp.js"],
+			"run_at": "document_start"
+		}
+	],
+	"description": "WhatsApp Profile Picture Downloader",
+	"icons": {
+		"192": "whatsapp.png"
+	},
+	"manifest_version": 2,
+	"minimum_chrome_version": "47",
+	"name": "WhatsApp Profile Picture by Sky",
+	"permissions": ["downloads"],
+	"version": "1.0.1"
+}
