@@ -19,6 +19,16 @@ function getStorage () {
 	return JSON.parse(localStorage.getItem("sky"));
 }
 
+function getURLOfMD5(wPPUrl) {
+	console.log(wPPUrl);
+	var imgUrl = decodeURIComponent(wPPUrl.split(/[\?.=]+/).pop()).split("?")[0];
+	if (imgUrl == null) {
+		alert("Update WhatsApp Profile Picture ?");
+	}
+
+	return md5(imgUrl.split("/").pop());
+}
+
 function formatDate() {
 	return new Date().toJSON().replace(/:/g, '-').split(".")[0];
     var d = new Date(),
@@ -56,19 +66,12 @@ function download (name, src, index=10) {
 			canvas.className = "done";
 			imgI = null;
 
-			var md5hash = md5(dataURL);
-			console.log(md5hash);
-
-			if (!saved.l.includes(md5hash)) {
-				var link = document.createElement('a');
-				link.download = [formatDate(), "+" + name, "WPP"].join("_");
-				link.href = dataURL;
-				link.click();
-				putStorage(md5hash);
-			}
+			var link = document.createElement('a');
+			link.download = [formatDate(), "+" + name, "WPP"].join("_");
+			link.href = dataURL;
+			link.click();
 		};
 		imgI.src = src;
-  
 	}, 100 + index*250, name, src)
 }
 
@@ -79,9 +82,13 @@ function get_images () {
 		if (img.src.indexOf("https://web.whatsapp.com/pp?e=") < 0) return;
 
 		var number = img.src.split("&u=").pop().split("%40")[0];
-		if (number !== null && !list.includes(number)){
-			list.push(number)
-			download(number, img.src, index);
+		if (number !== null){
+			var md5hash = getURLOfMD5(img.src);
+			console.log(md5hash);
+			if (!saved.l.includes(md5hash)) {
+				putStorage(md5hash);
+				download(number, img.src, index);
+			}
 		}
 	});
 }
