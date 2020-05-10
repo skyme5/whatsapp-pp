@@ -1,25 +1,16 @@
-var syncInput = document.createElement("input");
-syncInput.id = "web-pp-sync";
-document.body.appendChild(syncInput);
-
-function formatDate() {
-  return new Date().toJSON().replace(/:/g, "-").split(".")[0];
-}
-
-function getURLOfMD5(wPPUrl) {
+function getMD5OfImageSrc(wPPUrl) {
   var imgUrl = new URL(decodeURIComponent(wPPUrl));
-  var imgPath = new URL(imgUrl.searchParams.get("e")).pathname.split("/").pop();
+  var imgSrc = new URL(imgUrl.searchParams.get("e")).pathname.split("/").pop();
 
-  if (imgPath == null) {
+  if (imgSrc == null) {
     alert("Update WhatsApp Profile Picture ?");
   }
 
-  return { hash: md5(imgPath), str: imgPath };
+  return md5(imgSrc);
 }
 
 function download(name, src, index = 10) {
-  setTimeout(
-    function () {
+  setTimeout(() => {
       var imgI = new Image();
       imgI.setAttribute("crossOrigin", "anonymous");
       imgI.onload = function () {
@@ -59,19 +50,23 @@ function get_images() {
   document.querySelectorAll("img").forEach((img, index) => {
     if (img.src.indexOf("https://web.whatsapp.com/pp?e=") < 0) return;
 
-    var number = img.src.split("&u=").pop().split("%40")[0];
-    if (number !== null) {
-      var md5 = getURLOfMD5(img.src);
-      if (!saved.l.includes(md5.hash)) {
-        console.log(md5);
-        putStorage(md5.hash);
-        download(number, img.src, index);
-      }
+    var cellNumber = img.src.split("&u=").pop().split("%40")[0];
+
+    if (cellNumber === null) return;
+    if (!saved.downloadAll && !saved.downloadOnly.includes(cellNumber)) return;
+
+    var md5Sum = getMD5OfImageSrc(img.src);
+    var md5Cell = md5(cellNumber);
+    console.log(md5Sum, md5Cell, saved.cellToMD5[md5Cell] !== md5Sum)
+    if (saved.cellToMD5[md5Cell] !== md5Sum) {
+      cellToMD5PutStorage(md5Cell, md5Sum);
+      download(cellNumber, img.src, index);
     }
   });
 }
 
 setInterval(function () {
+  console.info('Scanning for Profile Pic');
   document.querySelectorAll("canvas.done").forEach((e) => e.remove());
   get_images();
 }, 500);

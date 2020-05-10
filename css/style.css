@@ -1,0 +1,29 @@
+#web-pp-panel {
+  all: unset;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background: rgb(189, 189, 189);
+  z-index: 999;
+  border-radius: 0 0 0 4px;
+  display: flex;
+  flex-direction: row;
+}
+
+#web-pp-panel label,
+#web-pp-panel button {
+  all: unset;
+  padding: 3px;
+  font-size: 14px;
+}
+
+#web-pp-panel input {
+  margin-right: 5px;
+}
+
+#web-pp-panel button:hover,
+#web-pp-panel label:hover {
+  cursor: pointer;
+  transition: all .3s ease-in-out;
+  background-color: rgb(255, 255, 255);
+}
