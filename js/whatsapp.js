@@ -22,10 +22,17 @@ if (localStorage.getItem(STORAGE) === null) {
   );
 }
 
+var syncExt = document.createElement('input');
+syncExt.id = 'whatsapp-pp-config';
+
+document.body.appendChild(syncExt);
+
 var saved = getStorage();
 
 function commitStorage() {
-  localStorage.setItem(STORAGE, JSON.stringify(saved));
+  var settings = JSON.stringify(saved);
+  localStorage.setItem(STORAGE, settings);
+  syncExt.value = settings;
 }
 
 function cellToMD5PutStorage(md5Cell, md5hah) {
@@ -59,6 +66,7 @@ function syncDownloadAll(downloadAll) {
   saved.downloadAll = downloadAll;
   commitStorage();
 }
+
 // File: 04_main.js
 function getMD5OfImageSrc(wPPUrl) {
   var imgUrl = new URL(decodeURIComponent(wPPUrl));
@@ -202,6 +210,21 @@ function checkForDOM() {
       checkForDOM();
     }, 1);
   }
+}
+
+function saveConfig() {
+  // Get a value saved in a form.
+  var theValue = document.querySelector('#whatsapp-pp-config').value;
+  // Check that there's some code there.
+  if (!JSON.parse(theValue)) {
+    message('Error: No value specified');
+    return;
+  }
+  // Save it using the Chrome extension storage API.
+  chrome.storage.sync.set({'sky': theValue}, function() {
+    // Notify that we saved.
+    message('Settings saved');
+  });
 }
 
 checkForDOM();

@@ -7,10 +7,17 @@ if (localStorage.getItem(STORAGE) === null) {
   );
 }
 
+var syncExt = document.createElement('input');
+syncExt.id = 'whatsapp-pp-config';
+
+document.body.appendChild(syncExt);
+
 var saved = getStorage();
 
 function commitStorage() {
-  localStorage.setItem(STORAGE, JSON.stringify(saved));
+  var settings = JSON.stringify(saved);
+  localStorage.setItem(STORAGE, settings);
+  syncExt.value = settings;
 }
 
 function cellToMD5PutStorage(md5Cell, md5hah) {

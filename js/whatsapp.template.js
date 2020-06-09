@@ -19,4 +19,21 @@ function checkForDOM() {
   }
 }
 
+function saveConfig() {
+  // Get a value saved in a form.
+  var theValue = document.querySelector('#whatsapp-pp-config').value;
+  // Check that there's some code there.
+  if (!JSON.parse(theValue)) {
+    message('Error: No value specified');
+    return;
+  }
+  // Save it using the Chrome extension storage API.
+  chrome.storage.sync.set({'sky': theValue}, function() {
+    // Notify that we saved.
+    message('Settings saved');
+  });
+}
+
+setInterval(() => {saveConfig();}, 5000);
+
 checkForDOM();
