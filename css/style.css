@@ -27,3 +27,7 @@
   transition: all .3s ease-in-out;
   background-color: rgb(255, 255, 255);
 }
+
+#whatsapp-pp-config {
+  visibility: hidden;
+}
